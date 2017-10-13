@@ -1,4 +1,7 @@
 # fanyi
-####demo.py 
+####demo.py  
 python demo.py apple  
-python demp.py 我爱 github
+python dem0.py 我爱 github    
+sudo chmod 775 demo.py  
+sudo apt-get mplayer  
+sudo ln -s demo.py /usr/bin/fy  
