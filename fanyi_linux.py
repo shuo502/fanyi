@@ -37,7 +37,7 @@ class fanyi():
             httpClient = httplib.HTTPConnection('api.fanyi.baidu.com')
             httpClient.request('GET', self.myurl)
 
-            #responseæ˜¯HTTPResponseå¯¹è±¡
+            #responseÊÇHTTPResponse¶ÔÏó
             response = httpClient.getresponse()
             return response.read()
 
@@ -78,6 +78,7 @@ class fanyi():
         return dicr
 
 if __name__=="__main__":
+    import os
     word = sys.argv
     delk=word.pop(0)
     word=" ".join(word)
@@ -87,6 +88,16 @@ if __name__=="__main__":
     # for i in selects:
     #     d = x.dicts(i)
     z=json.loads(x.fanyi(word))["trans_result"][0]["dst"]
-    s=str(word)+str("  -->ç¿»è¯‘ä¸º--->  ")+str(z)
+    s=str(word)+str("  -->·­ÒëÎª--->  ")+str(z)
     print s
-    x.audioplay(s)
+    #x.audioplay(s)
+    while 1 :
+        strkey=raw_input()
+        if strkey=="q":
+            break;
+        else:
+            os.system('clear')
+            z=json.loads(x.fanyi(strkey))["trans_result"][0]["dst"]
+            s=str(strkey)+str("  -->·­ÒëÎª--->  ")+str(z)
+            print s
+
