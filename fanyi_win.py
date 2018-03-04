@@ -14,10 +14,6 @@
 @time: 2018/2/7 0:36
 """
 
-# !/usr/bin/python
-# coding=utf8
-
-
 
 import urllib
 import http.client
@@ -105,7 +101,10 @@ class fanyi():
         setdict = {"s": abc(var), "f": bcd(var), "c": cde(var)}
         dicr = setdict[key1]
         return dicr
-
+    def write(self,s):
+        file = open('a.txt', 'a')
+        file.write("{}".format(s))
+        file.write("\n")
 
 if __name__=="__main__":
     import os
@@ -126,6 +125,7 @@ if __name__=="__main__":
     #x.audioplay(s)
     while 1 :
         strkey=input()
+        strkey=strkey.replace("\n","")
         if strkey=="q":
             break;
         else:
@@ -134,5 +134,7 @@ if __name__=="__main__":
             # z=json.loads(x.fanyi(strkey))["trans_result"][0]["dst"]
             z=json.loads(x.fanyi(strkey).decode())["trans_result"][0]["dst"]
             s=str(strkey)+str("  -->翻译为--->  ")+str(z)
+            # if x.r:x.write(s)
+            x.write(str(strkey)+":"+str(z))
             print (s)
 
