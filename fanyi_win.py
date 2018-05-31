@@ -36,17 +36,18 @@ if sys.version_info < (3, 4):
     reload(sys)
     sys.setdefaultencoding('utf8')
     print ("你好utf8")
-    strkey = str(raw_input("default utf8 \nsend key '1' endcoding gbk \nsend anykey endcoding utf8\n"))
+    print ("Default Coding is: utf8 \nIf display Err,Please set coding \nSend  '1' Set Commandline coding to GBK \nSend anykey Set Commandline  coding to UTF8\n")
+    strkey = str(raw_input("Please Set Commandline Coding :__"))
     strkey = strkey.replace("\n", "").replace("\n", " ")
 
     if '1'in strkey:
         reload(sys)
         sys.setdefaultencoding('gbk')
-        print ("你好gbk")
+        print ("set:gbk")
     else:
         reload(sys)
         sys.setdefaultencoding('utf8')
-        print ("你好utf8")
+        print ("Set:utf8")
 else:
     pass
     import http.client
@@ -170,7 +171,7 @@ if __name__=="__main__":
 
     z = json.loads(x.fanyi(word).decode())["trans_result"][0]["dst"]
     # z = json.loads(x.fanyi(word).decode())["trans_result"][0]["dst"]
-    s=str(word)+str("  >---TO--->  ")+str(z)
+    s=str(word)+str(u"  >---翻译--->  ")+str(z)
     print (s)
     #x.audioplay(s)
 
@@ -188,9 +189,11 @@ if __name__=="__main__":
                 # os.system('clear')#linux
                 os.system('cls')#windows
                 # z=json.loads(x.fanyi(strkey))["trans_result"][0]["dst"]
-                z=json.loads(x.fanyi(strkey).decode())["trans_result"][0]["dst"]
-                s=str(strkey)+str("  >---TO--->  ")+str(z)
+                if sys.version_info < (3, 4) and 'gbk' in sys.getdefaultencoding():#gbk to utf8
+                    z = json.loads(x.fanyi(strkey.decode("gbk").encode("utf8")).decode())["trans_result"][0]["dst"]
+                else:
+                    z=json.loads(x.fanyi(strkey).decode())["trans_result"][0]["dst"]
+                s=str(strkey)+str(u"  >---翻译--->  ")+str(z)
                 # if x.r:x.write(s)
                 x.write(str(strkey)+":"+str(z))
                 print (s)
-
