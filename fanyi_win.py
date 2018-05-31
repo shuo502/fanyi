@@ -15,13 +15,43 @@
 """
 
 
-import urllib
-import http.client
+
+import httplib
 import random
 import json, re
 import subprocess
 import sys
 import hashlib
+import os
+
+if sys.version_info < (3, 4):
+    pass
+    import md5
+    import urllib
+    import urllib2
+    import urlparse
+    from urllib2 import urlopen
+
+
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+    print ("你好utf8")
+    strkey = str(raw_input("default utf8 \nsend key '1' endcoding gbk \nsend anykey endcoding utf8\n"))
+    strkey = strkey.replace("\n", "").replace("\n", " ")
+
+    if '1'in strkey:
+        reload(sys)
+        sys.setdefaultencoding('gbk')
+        print ("你好gbk")
+    else:
+        reload(sys)
+        sys.setdefaultencoding('utf8')
+        print ("你好utf8")
+else:
+    pass
+    import http.client
+
+    #print("py3")
 
 
 class fanyi():
@@ -43,30 +73,37 @@ class fanyi():
             self.fromLang, self.toLang = 'zh', 'en'
 
         sign = self.appid + self.q + str(self.salt) + self.secretKey
-        # self.m1 = hashlib.md5()
-        # self.m1.update(sign)
-        # sign = self.m1.hexdigest()
-        sign = hashlib.md5(bytes(sign, encoding='utf-8')).hexdigest()
+        if sys.version_info < (3, 4):
+            pass
+            self.m1 = hashlib.md5()
+            # self.m1 = md5()
+            self.m1.update(sign)
+            sign = self.m1.hexdigest()
+            self.myurl = self.myurl + '?appid=' + self.appid + '&q=' +urllib.quote(self.q) + '&from=' + self.fromLang + '&to=' + self.toLang + '&salt=' + str(self.salt) + '&sign=' + sign
 
-        self.myurl = self.myurl + '?appid=' + self.appid + '&q=' +urllib.parse.quote(self.q) + '&from=' + self.fromLang + '&to=' + self.toLang + '&salt=' + str(self.salt) + '&sign=' + sign
+        else:
+            pass
+            sign = hashlib.md5(bytes(sign, encoding='utf-8')).hexdigest()
+            self.myurl = self.myurl + '?appid=' + self.appid + '&q=' +urllib.parse.quote(self.q) + '&from=' + self.fromLang + '&to=' + self.toLang + '&salt=' + str(self.salt) + '&sign=' + sign
+
+
 
     def reques(self):
-        try:
+        if sys.version_info < (3, 4):
+            pass
+            try:
+                httpClient = httplib.HTTPConnection('api.fanyi.baidu.com')
+                httpClient.request('GET', self.myurl)
 
+                #response是HTTPResponse对象
+                response = httpClient.getresponse()
+                return response.read()
 
-            httpClient =http.client.HTTPSConnection('api.fanyi.baidu.com')
-
-            httpClient.request('GET', self.myurl)
-
-            # response是HTTPResponse对象
-            response = httpClient.getresponse()
-            return response.read()
-
-        except Exception as e:
-            print(e)
-        finally:
-            if httpClient:
-                httpClient.close()
+            except Exception, e:
+                print e
+            finally:
+                if httpClient:
+                    httpClient.close()
 
     def setq(self, q):
         self.q = q
@@ -105,9 +142,20 @@ class fanyi():
         file = open('a.txt', 'a')
         file.write("{}".format(s))
         file.write("\n")
-
+def selectcoding():
+    if sys.version_info < (3, 4):
+        strkey = str(raw_input("default utf8 \nsend key '1' endcoding gbk \nsend anykey endcoding utf8\n"))
+    else:
+        strkey = str(input("default utf8 \nsend '1' endcoding gbk \nsend anykey endcoding utf8\n"))
+    strkey = strkey.replace("\n", "").replace("\n", " ")
+    if strkey==1:
+        reload(sys)
+        sys.setdefaultencoding('gbk')
+    else:
+        reload(sys)
+        sys.setdefaultencoding('utf8')
 if __name__=="__main__":
-    import os
+
     word = sys.argv
     delk=word.pop(0)
     word=" ".join(word)
@@ -119,22 +167,30 @@ if __name__=="__main__":
     # for i in selects:
     #     d = x.dicts(i)
     # z=json.loads(x.fanyi(word))["trans_result"][0]["dst"]
+
     z = json.loads(x.fanyi(word).decode())["trans_result"][0]["dst"]
-    s=str(word)+str("  -->翻译为--->  ")+str(z)
+    # z = json.loads(x.fanyi(word).decode())["trans_result"][0]["dst"]
+    s=str(word)+str("  >---TO--->  ")+str(z)
     print (s)
     #x.audioplay(s)
+
     while 1 :
-        strkey=input()
-        strkey=strkey.replace("\n","")
-        if strkey=="q":
-            break;
+        if sys.version_info < (3, 4):
+            strkey=str(raw_input())
         else:
-            # os.system('clear')#linux
-            os.system('cls')#windows
-            # z=json.loads(x.fanyi(strkey))["trans_result"][0]["dst"]
-            z=json.loads(x.fanyi(strkey).decode())["trans_result"][0]["dst"]
-            s=str(strkey)+str("  -->翻译为--->  ")+str(z)
-            # if x.r:x.write(s)
-            x.write(str(strkey)+":"+str(z))
-            print (s)
+            strkey=str(input())
+        strkey = strkey.replace("\n", "")
+        if strkey:
+
+            if strkey=="q":
+                break;
+            else:
+                # os.system('clear')#linux
+                os.system('cls')#windows
+                # z=json.loads(x.fanyi(strkey))["trans_result"][0]["dst"]
+                z=json.loads(x.fanyi(strkey).decode())["trans_result"][0]["dst"]
+                s=str(strkey)+str("  >---TO--->  ")+str(z)
+                # if x.r:x.write(s)
+                x.write(str(strkey)+":"+str(z))
+                print (s)
 
